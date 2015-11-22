@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Connect3</string>
+    <string name="button.game.restart">Restart game</string>
 </resources>
