@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 {4, 5, 6}
         };
 
-        for(int i = 0; i < gameLayout.getChildCount(); i++) {
+        for (int i = 0; i < gameLayout.getChildCount(); i++) {
             ((ImageView) gameLayout.getChildAt(i)).setImageResource(0); //empty image
         }
 
