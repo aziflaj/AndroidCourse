@@ -26,7 +26,7 @@
             android:text="Hello" />
 
         <Button
-            android:id="@+id/how_are_you"
+            android:id="@+id/howareyou"
             android:layout_column="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
@@ -36,7 +36,7 @@
             android:text="How are you?" />
 
         <Button
-            android:id="@+id/speak_english"
+            android:id="@+id/doyouspeakenglish"
             android:layout_column="0"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
@@ -46,7 +46,7 @@
             android:text="Do You Speak\n English?" />
 
         <Button
-            android:id="@+id/evening"
+            android:id="@+id/goodevening"
             android:layout_column="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
@@ -56,7 +56,7 @@
             android:text="Good Evening!" />
 
         <Button
-            android:id="@+id/live"
+            android:id="@+id/ilivein"
             android:layout_column="0"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
@@ -66,7 +66,7 @@
             android:text="I live in..." />
 
         <Button
-            android:id="@+id/name"
+            android:id="@+id/mynameis"
             android:layout_column="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"

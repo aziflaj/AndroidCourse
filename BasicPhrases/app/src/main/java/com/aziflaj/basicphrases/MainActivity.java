@@ -16,48 +16,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void playSound(View view) {
         int viewId = view.getId();
-        MediaPlayer mediaPlayer;
+        String stringifiedViewId = view.getResources().getResourceEntryName(viewId);
 
-        switch (viewId) {
-            case R.id.hello:
-                mediaPlayer = MediaPlayer.create(this, R.raw.hello);
-                mediaPlayer.start();
-                break;
-
-            case R.id.how_are_you:
-                mediaPlayer = MediaPlayer.create(this, R.raw.howareyou);
-                mediaPlayer.start();
-                break;
-
-            case R.id.speak_english:
-                mediaPlayer = MediaPlayer.create(this, R.raw.doyouspeakenglish);
-                mediaPlayer.start();
-                break;
-
-            case R.id.evening:
-                mediaPlayer = MediaPlayer.create(this, R.raw.goodevening);
-                mediaPlayer.start();
-                break;
-
-            case R.id.live:
-                mediaPlayer = MediaPlayer.create(this, R.raw.ilivein);
-                mediaPlayer.start();
-                break;
-
-            case R.id.name:
-                mediaPlayer = MediaPlayer.create(this, R.raw.mynameis);
-                mediaPlayer.start();
-                break;
-
-            case R.id.please:
-                mediaPlayer = MediaPlayer.create(this, R.raw.please);
-                mediaPlayer.start();
-                break;
-
-            case R.id.welcome:
-                mediaPlayer = MediaPlayer.create(this, R.raw.welcome);
-                mediaPlayer.start();
-                break;
-        }
+        int soundId = getResources().getIdentifier(stringifiedViewId, "raw", "com.aziflaj.basicphrases");
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, soundId);
+        mediaPlayer.start();
     }
 }
