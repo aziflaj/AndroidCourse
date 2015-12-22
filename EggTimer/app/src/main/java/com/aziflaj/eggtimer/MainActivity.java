@@ -1,5 +1,6 @@
 package com.aziflaj.eggtimer;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     Button timerBtn;
     TextView countDownTextView;
     CountDownTimer mCountDownTimer;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
                 mSeekBar.setEnabled(true);
                 seconds = 0;
                 countDownTextView.setText("0:00");
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.horn);
+                mediaPlayer.start();
             }
         };
 
