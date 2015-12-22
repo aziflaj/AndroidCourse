@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
-        mCountDownTimer = new CountDownTimer(seconds * 1000, 1000) {
+        mCountDownTimer = new CountDownTimer(seconds * 1000 + 100, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 int minutesLeft = (int) ((millisUntilFinished / 1000) / 60);
