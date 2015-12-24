@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
@@ -21,11 +20,8 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
             connection = (HttpURLConnection) connectionUrl.openConnection();
 
             InputStream inputStream = connection.getInputStream();
-            Bitmap bmp = BitmapFactory.decodeStream(inputStream);
-            return bmp;
+            return BitmapFactory.decodeStream(inputStream);
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

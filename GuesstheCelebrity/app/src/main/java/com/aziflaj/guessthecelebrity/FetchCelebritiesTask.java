@@ -17,11 +17,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FetchCelebritiesTask extends AsyncTask<String, Void, Map<String, String>> {
+    public static final String LOG_TAG = FetchCelebritiesTask.class.getSimpleName();
+
     @Override
     protected Map<String, String> doInBackground(String... params) {
         Map<String, String> celebrityMap = new HashMap<>();
         String url = params[0];
-        HttpURLConnection connection = null;
+        HttpURLConnection connection;
         List<String> imageUrls = new ArrayList<>();
         List<String> nameList = new ArrayList<>();
 
@@ -63,15 +65,14 @@ public class FetchCelebritiesTask extends AsyncTask<String, Void, Map<String, St
 
             for (int i = 0; i < nameList.size(); i++) {
                 celebrityMap.put(nameList.get(i), imageUrls.get(i));
-                Log.i(nameList.get(i), imageUrls.get(i));
             }
 
             return celebrityMap;
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "Malformed Url Exception: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "I/O Exception" + e.getMessage());
         }
 
         return null;
