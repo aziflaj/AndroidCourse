@@ -25,6 +25,7 @@
         android:layout_alignEnd="@+id/button2"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:onClick="answer"
         android:text="New Button" />
 
     <Button
@@ -34,6 +35,7 @@
         android:layout_above="@+id/button"
         android:layout_alignEnd="@+id/button3"
         android:layout_alignParentStart="true"
+        android:onClick="answer"
         android:text="New Button" />
 
     <Button
@@ -43,6 +45,7 @@
         android:layout_above="@+id/button2"
         android:layout_alignEnd="@+id/button4"
         android:layout_alignParentStart="true"
+        android:onClick="answer"
         android:text="New Button" />
 
     <Button
@@ -52,5 +55,6 @@
         android:layout_above="@+id/button3"
         android:layout_alignEnd="@+id/imageView"
         android:layout_alignParentStart="true"
+        android:onClick="answer"
         android:text="New Button" />
 </RelativeLayout>
