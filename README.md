@@ -16,3 +16,6 @@ This is the repository of different Android applications developed while going t
 
 ## #5 - Guess the Celebrity
 [Guess the Celebrity](https://github.com/aziflaj/AndroidCourse/tree/master/GuesstheCelebrity) is a game where the user should guess the name of various celebrities when given their photo.
+
+## #6 - What's the Weather
+[What's the Weather](https://github.com/aziflaj/AndroidCourse/tree/master/WhatsTheWeather) connects to the [OpenWeatherAPI](http://openweathermap.org/current) and fetches information about a city given by the user.
