@@ -1,22 +1,24 @@
 package com.aziflaj.whatstheweather;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class FetchWeatherTask extends AsyncTask<String, Void, String> {
+    Context mContext;
     TextView mTextView;
 
-    public FetchWeatherTask(TextView resultTextView) {
+    public FetchWeatherTask(Context context, TextView resultTextView) {
+        mContext = context;
         mTextView = resultTextView;
     }
 
@@ -51,8 +53,8 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String> {
 
             return sbResult.toString();
 
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Toast.makeText(mContext, "Some error occurred", Toast.LENGTH_LONG).show();
         }
 
         return null;

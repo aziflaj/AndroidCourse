@@ -4,10 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     EditText cityEditText;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         cityEditText = (EditText) findViewById(R.id.city_edit_text);
         resultTextView = (TextView) findViewById(R.id.result_text_view);
-        task = new FetchWeatherTask(resultTextView);
+        task = new FetchWeatherTask(getApplicationContext(), resultTextView);
     }
 
     public void getWeather(View view) {
@@ -29,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(cityEditText.getWindowToken(), 0);
 
         String city = cityEditText.getText().toString();
+
+        if (TextUtils.isEmpty(city)) {
+            Toast.makeText(getApplicationContext(), "Please enter a city name", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String url = Uri.parse("http://api.openweathermap.org/data/2.5")
                 .buildUpon()
