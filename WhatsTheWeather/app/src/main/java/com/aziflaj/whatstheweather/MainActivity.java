@@ -1,9 +1,11 @@
 package com.aziflaj.whatstheweather;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getWeather(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(cityEditText.getWindowToken(), 0);
+
         String city = cityEditText.getText().toString();
 
         String url = Uri.parse("http://api.openweathermap.org/data/2.5")
