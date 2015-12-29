@@ -53,7 +53,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(coords));
+        if (coords.latitude == coords.longitude && coords.latitude == 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(coords));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coords, 10));
+        }
+
         mMap.addMarker(new MarkerOptions()
                 .position(coords)
                 .title(marker)
