@@ -2,6 +2,7 @@ package com.aziflaj.notes;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,9 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
         ListView notesListView = (ListView) findViewById(R.id.list_view);
         notesList = new ArrayList<>();
-        notesList.add("Uno");
-        notesList.add("Due");
-        notesList.add("Tre");
+
+        PreferenceHelper helper = new PreferenceHelper(this);
+        Set<String> notes = helper.getNotes();
+
+        for (String note : notes) {
+            notesList.add(note);
+        }
 
         notesAdapter = new ArrayAdapter<>(
                 this,
@@ -75,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                // add the item
+                Intent intent = new Intent(MainActivity.this, NewNoteActivity.class);
+                startActivity(intent);
                 return true;
 
             default:
