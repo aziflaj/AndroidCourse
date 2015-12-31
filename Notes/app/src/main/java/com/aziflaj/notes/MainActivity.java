@@ -1,16 +1,68 @@
 package com.aziflaj.notes;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    SharedPreferences manager;
+    ArrayList<String> notesList;
+    ArrayAdapter<String> notesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        manager = PreferenceManager.getDefaultSharedPreferences(this);
+
+        ListView notesListView = (ListView) findViewById(R.id.list_view);
+        notesList = new ArrayList<>();
+        notesList.add("Uno");
+        notesList.add("Due");
+        notesList.add("Tre");
+
+        notesAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.list_item,
+                notesList);
+
+        notesListView.setAdapter(notesAdapter);
+
+        notesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final int index = position;
+                new AlertDialog.Builder(MainActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Do you want to delete this note?")
+                        .setMessage("This can not be undone")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.d("Notes", "Delete " + notesList.get(index));
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+
+                return true;
+            }
+        });
+
     }
 
     @Override
