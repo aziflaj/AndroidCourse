@@ -19,3 +19,12 @@ This is the repository of different Android applications developed while going t
 
 ## #6 - What's the Weather
 [What's the Weather](https://github.com/aziflaj/AndroidCourse/tree/master/WhatsTheWeather) connects to the [OpenWeatherAPI](http://openweathermap.org/current) and fetches information about a city given by the user.
+
+## #7 Hiker's Watch
+[Hiker's Watch](https://github.com/aziflaj/AndroidCourse/tree/master/Hiker'sWatch) shows information about the location of the user, such as the latitude and longitude, altitude and address.
+
+## #8 Memorable Places
+[Memorable Places](https://github.com/aziflaj/AndroidCourse/tree/master/MemorablePlaces) allows the user to add a list of places in the map.
+
+## #9 Notes
+[Notes](https://github.com/aziflaj/AndroidCourse/tree/master/Notes) allows the user to add notes in a list and delete them.
