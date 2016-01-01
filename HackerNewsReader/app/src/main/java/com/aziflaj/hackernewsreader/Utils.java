@@ -9,7 +9,6 @@ public class Utils {
     public static final String DROP_TABLES_SQL = "DROP TABLE IF EXISTS news;";
     public static final String CREATE_TABLES_SQL = "CREATE TABLE IF NOT EXISTS news ( " +
             " id INT, title TEXT, url TEXT);";
-    public static final String INSERT_SQL_FORMAT = "INSERT INTO news (id, title, url) VALUES (%d, '%s', '%s');";
+    public static final String INSERT_STATEMENT = "INSERT INTO news (id, title, url) VALUES (?, ?, ?);";
     public static final String SELECT_SQL = "SELECT id as _id, title, url FROM news;";
-
 }

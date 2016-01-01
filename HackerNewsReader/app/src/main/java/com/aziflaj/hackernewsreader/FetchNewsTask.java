@@ -3,9 +3,9 @@ package com.aziflaj.hackernewsreader;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,9 +69,12 @@ public class FetchNewsTask extends AsyncTask<String, Void, Cursor> {
                     String title = escape(json.getString("title"));
                     String url = escape(json.getString("url"));
 
-                    String insert = String.format(Utils.INSERT_SQL_FORMAT, id, title, url);
-                    Log.d("LOG", insert);
-                    mDb.execSQL(insert);
+                    SQLiteStatement stmt = mDb.compileStatement(Utils.INSERT_STATEMENT);
+                    stmt.bindString(1, String.valueOf(id));
+                    stmt.bindString(2, title);
+                    stmt.bindString(3, url);
+
+                    stmt.execute();
                 }
             }
 
