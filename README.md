@@ -28,3 +28,6 @@ This is the repository of different Android applications developed while going t
 
 ## #9 Notes
 [Notes](https://github.com/aziflaj/AndroidCourse/tree/master/Notes) allows the user to add notes in a list and delete them.
+
+## #10 Hacker News Reader
+[Hacker News Reader](https://github.com/aziflaj/AndroidCourse/tree/master/HackerNewsReader) fetches 10 last news from the [Hacker News](https://news.ycombinator.com/) website and shows them into the app, using a `WebView`.
