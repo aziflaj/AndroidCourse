@@ -1,17 +1,19 @@
 package com.aziflaj.hackernewsreader;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
-    SimpleCursorAdapter adapter;
+    NewsCursorAdapter adapter;
     Cursor cursor;
 
     @Override
@@ -31,16 +33,19 @@ public class MainActivity extends AppCompatActivity {
 
             if (cursor != null) {
 
-                adapter = new SimpleCursorAdapter(
-                        this,
-                        R.layout.list_item,
-                        cursor,
-                        new String[]{"title"},
-                        new int[]{R.id.news_list_view_item},
-                        0);
-                Log.d("LOG", "Cursor not null");
+                adapter = new NewsCursorAdapter(this, cursor, 0);
+
                 newsListView.setAdapter(adapter);
+                newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(MainActivity.this, NewsActivity.class);
+                        intent.putExtra("url", view.getTag().toString());
+                        startActivity(intent);
+                    }
+                });
             }
+
 
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
