@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">Exchangeagram</string>
+    <string name="app_name" translatable="false">Exchangeagram</string>
+
+    <string name="session.button.login">Log in</string>
+    <string name="session.button.signup">Sign up</string>
+    <string name="session.text.login">Already have an account? Log in</string>
+    <string name="session.text.signup">Don\'t have an account? Sign up</string>
+    <string name="session.text.username">Username</string>
+    <string name="session.text.password">Password</string>
 </resources>
