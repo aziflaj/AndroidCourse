@@ -1,5 +1,6 @@
 package com.aziflaj.exchangeagram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -28,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (ParseUser.getCurrentUser() != null) {
+            startActivity(new Intent(this, UserListActivity.class));
+            finish();
+        }
+
         mUsernameEditText = (EditText) findViewById(R.id.username_edit_text);
         mPasswordEditText = (EditText) findViewById(R.id.password_edit_text);
         mSessionButton = (Button) findViewById(R.id.session_button);
@@ -46,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    handleSignUpOrLogIn(v);
+                    handleSignUpOrLogIn(mSessionButton);
                 }
                 return true;
             }
@@ -70,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 public void done(ParseUser user, ParseException e) {
                     if (user != null) {
                         Toast.makeText(getApplicationContext(), "Logged in", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this, UserListActivity.class));
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -84,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 public void done(ParseException e) {
                     if (e == null) {
                         Toast.makeText(getApplicationContext(), "Signed up", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this, UserListActivity.class));
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
