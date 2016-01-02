@@ -3,6 +3,7 @@ package com.aziflaj.exchangeagram;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,10 +32,30 @@ public class MainActivity extends AppCompatActivity {
         mPasswordEditText = (EditText) findViewById(R.id.password_edit_text);
         mSessionButton = (Button) findViewById(R.id.session_button);
 
+        mUsernameEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    mPasswordEditText.requestFocus();
+                }
+                return true;
+            }
+        });
+
+        mPasswordEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    handleSignUpOrLogIn(v);
+                }
+                return true;
+            }
+        });
+
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
     }
 
-    public void handleSession(View view) {
+    public void handleSignUpOrLogIn(View view) {
         String username = mUsernameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
 
