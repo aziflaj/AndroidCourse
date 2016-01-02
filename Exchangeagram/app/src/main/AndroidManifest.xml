@@ -15,10 +15,10 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.parse.APPLICATION_ID"
-            android:value="MDLNLp5bJTJK3wNa1goxztSP3Ii5gzNCRj1UQFOg"/>
+            android:value="@string/key.parse.app_id"/>
         <meta-data
             android:name="com.parse.CLIENT_KEY"
-            android:value="iaP5mxrX5n3B2i42ouyGWKnKQoBWoEEhTCEIN490"/>
+            android:value="@string/key.parse.client"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

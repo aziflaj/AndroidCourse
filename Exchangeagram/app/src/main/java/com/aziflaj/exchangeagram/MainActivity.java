@@ -2,12 +2,14 @@ package com.aziflaj.exchangeagram;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
-import com.parse.GetCallback;
+import com.parse.FindCallback;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         progressObject.saveInBackground();
         //*/
 
-        //*
+        /*
         // Object update
         ParseQuery<ParseObject> progressQuery = ParseQuery.getQuery("Progress");
         progressQuery.getInBackground("9fgdj9XNY8", new GetCallback<ParseObject>() {
@@ -41,5 +43,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //*/
+
+        //*
+        // get all objects
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Progress");
+        query.whereEqualTo("username", "aziflaj");
+        query.setLimit(1); // username should be unique
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    ParseObject aziflaj = objects.get(0);
+                    aziflaj.put("progress", 58);
+                    aziflaj.saveInBackground();
+                }
+            }
+        });
+        //*/
+
+
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
     }
 }
