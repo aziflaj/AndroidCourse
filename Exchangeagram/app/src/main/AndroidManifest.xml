@@ -34,6 +34,11 @@
         </activity>
         <activity android:name=".UserListActivity">
         </activity>
+        <activity android:name=".UserFeedActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".UserListActivity"/>
+        </activity>
     </application>
 
 </manifest>

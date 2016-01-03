@@ -10,11 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -35,8 +37,17 @@ public class UserListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
-
+        final ArrayList<String> usernames = new ArrayList<>();
         final ListView usersListView = (ListView) findViewById(R.id.users_list_view);
+
+        usersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(UserListActivity.this, UserFeedActivity.class);
+                intent.putExtra("username", usernames.get(position));
+                startActivity(intent);
+            }
+        });
 
         ParseQuery<ParseUser> usersQuery = ParseUser.getQuery();
         usersQuery.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
@@ -46,7 +57,6 @@ public class UserListActivity extends AppCompatActivity {
             public void done(List<ParseUser> usersList, ParseException e) {
                 if (e == null) {
                     if (usersList.size() > 0) {
-                        ArrayList<String> usernames = new ArrayList<>();
                         for (ParseUser user : usersList) {
                             usernames.add(user.getUsername());
                         }
@@ -79,6 +89,12 @@ public class UserListActivity extends AppCompatActivity {
                 ParseObject image = new ParseObject("Image");
                 image.put("username", ParseUser.getCurrentUser().getUsername());
                 image.put("image", parsePhoto);
+
+                ParseACL acl = new ParseACL();
+                acl.setPublicReadAccess(true);
+                acl.setPublicWriteAccess(false);
+                image.setACL(acl);
+
                 Toast.makeText(this, "Uploading photo", Toast.LENGTH_SHORT).show();
                 image.saveInBackground(new SaveCallback() {
                     @Override
@@ -106,6 +122,12 @@ public class UserListActivity extends AppCompatActivity {
                 ParseObject image = new ParseObject("Image");
                 image.put("username", ParseUser.getCurrentUser().getUsername());
                 image.put("image", parsePhoto);
+
+                ParseACL acl = new ParseACL();
+                acl.setPublicReadAccess(true);
+                acl.setPublicWriteAccess(false);
+                image.setACL(acl);
+
                 Toast.makeText(this, "Uploading photo", Toast.LENGTH_SHORT).show();
                 image.saveInBackground(new SaveCallback() {
                     @Override
