@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+    <uses-feature
+        android:name="action.hardware.camera"
+        android:required="false"/>
+
     <application
         android:name=".ExchangeagramApplication"
         android:allowBackup="true"

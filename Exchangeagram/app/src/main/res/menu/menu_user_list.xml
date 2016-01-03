@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".UserListActivity">
     <item
-        android:id="@+id/share"
-        android:icon="@drawable/ic_action_share"
-        android:title="@string/share"
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_action_logout"
+        android:title="@string/logout"
         app:showAsAction="always"/>
 </menu>
