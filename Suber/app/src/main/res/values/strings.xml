@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Suber</string>
+    <string name="description.logo">The Uber logo</string>
+
+
+    <string name="user.type.rider">Rider</string>
+    <string name="user.type.driver">Driver</string>
+
+    <string name="button.signup">Sign up</string>
 </resources>
