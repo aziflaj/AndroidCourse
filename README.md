@@ -31,3 +31,6 @@ This is the repository of different Android applications developed while going t
 
 ## #10 Hacker News Reader
 [Hacker News Reader](https://github.com/aziflaj/AndroidCourse/tree/master/HackerNewsReader) fetches 10 last news from the [Hacker News](https://news.ycombinator.com/) website and shows them into the app, using a `WebView`.
+
+## #11 Exchangeagram
+[Exchangeagram](https://github.com/aziflaj/AndroidCourse/tree/master/Exchangeagram) is an Instagram copy application, using [Parse](http://parse.com/) for online storage.
