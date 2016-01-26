@@ -11,11 +11,11 @@
     tools:context="com.aziflaj.suber.MainActivity">
 
     <ImageView
-        android:layout_marginTop="16dp"
         android:id="@+id/uber_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/description.logo"
         android:src="@drawable/uber_logo"/>
 
@@ -55,6 +55,6 @@
         android:layout_below="@id/linear_layout"
         android:layout_centerHorizontal="true"
         android:onClick="getStarted"
-        android:textAllCaps="true"
-        android:text="@string/button.signup"/>
+        android:text="@string/button.signup"
+        android:textAllCaps="true"/>
 </RelativeLayout>

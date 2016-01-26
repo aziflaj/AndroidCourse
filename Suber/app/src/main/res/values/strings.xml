@@ -7,4 +7,7 @@
     <string name="user.type.driver">Driver</string>
 
     <string name="button.signup">Get started</string>
+
+    <string name="maps.activity.title">Map</string>
+    <string name="maps.button.call_taxi">Taxi here</string>
 </resources>

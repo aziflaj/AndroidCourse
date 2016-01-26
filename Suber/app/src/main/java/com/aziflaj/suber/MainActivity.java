@@ -1,5 +1,6 @@
 package com.aziflaj.suber;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
             });
         } else if (ParseUser.getCurrentUser().get("role") != null) {
             Log.d(TAG, "Redirect User");
+            startActivity(new Intent(MainActivity.this, MapsActivity.class));
+            finish();
         }
 
         mSwitch = (Switch) findViewById(R.id.rider_driver_switch);
