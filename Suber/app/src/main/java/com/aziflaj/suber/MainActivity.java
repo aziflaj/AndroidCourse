@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
     private Switch mSwitch;
 
     @Override
@@ -42,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else if (ParseUser.getCurrentUser().get("role") != null) {
-            Log.d(TAG, "Redirect User");
-            startActivity(new Intent(MainActivity.this, MapsActivity.class));
-            finish();
+            redirectUser();
         }
 
         mSwitch = (Switch) findViewById(R.id.rider_driver_switch);
@@ -59,11 +55,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Toast.makeText(getApplicationContext(), "User role set", Toast.LENGTH_SHORT).show();
+                    redirectUser();
                 } else {
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void redirectUser() {
+        if (ParseUser.getCurrentUser().get("role").equals("rider")) {
+            startActivity(new Intent(MainActivity.this, MapsActivity.class));
+            finish();
+        }
     }
 }

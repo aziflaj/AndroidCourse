@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -32,15 +32,12 @@ import com.parse.SaveCallback;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
-    public static final String TAG = MapsActivity.class.getSimpleName();
-
     private GoogleMap mMap;
     private Marker mMarker;
     private LocationManager mLocationManager;
     private String mBestProvider;
     private TextView mStatusTextView;
     private Button mRequestButton;
-    private String mRequestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         if (mLocationManager != null) {
-            mLocationManager.requestLocationUpdates(mBestProvider, 400, 0, this);
+            mLocationManager.requestLocationUpdates(mBestProvider, 400, 1, this);
         }
     }
 
@@ -108,12 +105,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Location hereNow = mLocationManager.getLastKnownLocation(mBestProvider);
         if (hereNow != null) {
-            Log.d(TAG, "Location: Lat " + hereNow.getLatitude());
-            Log.d(TAG, "Location: Long " + hereNow.getLongitude());
             onLocationChanged(hereNow);
         }
 
-        mLocationManager.requestLocationUpdates(mBestProvider, 400, 0, this);
+        mLocationManager.requestLocationUpdates(mBestProvider, 400, 1, this);
     }
 
     @Override
@@ -126,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double lng = location.getLongitude();
         LatLng hereNow = new LatLng(lat, lng);
         mMarker = mMap.addMarker(new MarkerOptions().position(hereNow));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hereNow, 17));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(hereNow, 17));
     }
 
     @Override
@@ -166,8 +161,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location hereNow = mLocationManager.getLastKnownLocation(mBestProvider);
 
         if (hereNow != null) {
-            final ParseObject request = new ParseObject("Requests");
+            ParseObject request = new ParseObject("Requests");
             request.put("riderUsername", ParseUser.getCurrentUser().getUsername());
+            ParseACL acl = new ParseACL();
+            acl.setPublicWriteAccess(true);
+            acl.setPublicReadAccess(true);
+            request.setACL(acl);
             request.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -176,7 +175,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mStatusTextView.setText(gettingUber);
                         String cancelButton = getString(R.string.maps_button_cancel_taxi);
                         mRequestButton.setText(cancelButton);
-                        mRequestId = request.getObjectId();
                     } else {
                         Toast.makeText(MapsActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
                     }
@@ -189,16 +187,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void cancelUber() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Requests");
-        query.whereEqualTo("objectId", mRequestId);
+        query.whereEqualTo("riderUsername", ParseUser.getCurrentUser().getUsername());
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
+                if (e == null && objects.size() > 0) {
                     for (ParseObject o : objects) {
                         o.deleteInBackground();
                     }
 
-                    mStatusTextView.setText("");
+                    String status = getString(R.string.maps_status_cancelled);
+                    mStatusTextView.setText(status);
                     String findButton = getString(R.string.maps_button_call_taxi);
                     mRequestButton.setText(findButton);
                 } else {
