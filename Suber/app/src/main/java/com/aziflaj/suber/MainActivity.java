@@ -65,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void redirectUser() {
         if (ParseUser.getCurrentUser().get("role").equals("rider")) {
-            startActivity(new Intent(MainActivity.this, MapsActivity.class));
+            startActivity(new Intent(MainActivity.this, RiderActivity.class));
+            finish();
+        } else if (ParseUser.getCurrentUser().get("role").equals("driver")) {
+            startActivity(new Intent(MainActivity.this, DriverActivity.class));
             finish();
         }
     }

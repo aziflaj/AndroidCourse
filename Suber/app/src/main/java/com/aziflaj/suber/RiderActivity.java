@@ -1,6 +1,7 @@
 package com.aziflaj.suber;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -8,7 +9,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,7 +34,7 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class RiderActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     private GoogleMap mMap;
     private Marker mMarker;
     private LocationManager mLocationManager;
@@ -42,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_rider);
         mStatusTextView = (TextView) findViewById(R.id.uber_request_status);
         mRequestButton = (Button) findViewById(R.id.request_btn);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -64,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(MapsActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(RiderActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -80,12 +83,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(MapsActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(RiderActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
         if (mLocationManager != null) {
             mLocationManager.requestLocationUpdates(mBestProvider, 400, 1, this);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.rider_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                ParseUser.logOut();
+                startActivity(new Intent(RiderActivity.this, MainActivity.class));
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -99,7 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(MapsActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(RiderActivity.this, "You don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -154,7 +177,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(MapsActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(RiderActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -171,17 +194,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        String gettingUber = getString(R.string.maps_status_finding);
+                        String gettingUber = getString(R.string.rider_status_finding);
                         mStatusTextView.setText(gettingUber);
-                        String cancelButton = getString(R.string.maps_button_cancel_taxi);
+                        String cancelButton = getString(R.string.rider_button_cancel_taxi);
                         mRequestButton.setText(cancelButton);
                     } else {
-                        Toast.makeText(MapsActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RiderActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         } else {
-            Toast.makeText(MapsActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RiderActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -196,12 +219,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         o.deleteInBackground();
                     }
 
-                    String status = getString(R.string.maps_status_cancelled);
+                    String status = getString(R.string.rider_status_cancelled);
                     mStatusTextView.setText(status);
-                    String findButton = getString(R.string.maps_button_call_taxi);
+                    String findButton = getString(R.string.rider_button_call_taxi);
                     mRequestButton.setText(findButton);
                 } else {
-                    Toast.makeText(MapsActivity.this, "Couldn't cancel the last request", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RiderActivity.this, "Couldn't cancel the last request", Toast.LENGTH_SHORT).show();
                 }
             }
         });

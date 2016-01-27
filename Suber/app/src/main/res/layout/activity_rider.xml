@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.aziflaj.suber.MapsActivity">
+    tools:context=".RiderActivity">
 
     <fragment
         android:id="@+id/map"
@@ -30,6 +30,6 @@
         android:layout_margin="16dp"
         android:onClick="getTaxi"
         android:tag="request"
-        android:text="@string/maps.button.call_taxi"/>
+        android:text="@string/rider.button.call_taxi"/>
 
 </RelativeLayout>
