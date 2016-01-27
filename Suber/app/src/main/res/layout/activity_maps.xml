@@ -11,13 +11,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <TextView
+        android:id="@+id/uber_request_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="28dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"/>
+
     <Button
+        android:id="@+id/request_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
         android:onClick="getTaxi"
+        android:tag="request"
         android:text="@string/maps.button.call_taxi"/>
 
 </RelativeLayout>

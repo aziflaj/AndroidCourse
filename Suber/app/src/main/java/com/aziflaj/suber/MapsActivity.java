@@ -11,6 +11,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,6 +22,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
     public static final String TAG = MapsActivity.class.getSimpleName();
@@ -28,11 +38,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker mMarker;
     private LocationManager mLocationManager;
     private String mBestProvider;
+    private TextView mStatusTextView;
+    private Button mRequestButton;
+    private String mRequestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        mStatusTextView = (TextView) findViewById(R.id.uber_request_status);
+        mRequestButton = (Button) findViewById(R.id.request_btn);
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mBestProvider = mLocationManager.getBestProvider(new Criteria(), true);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -89,8 +106,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        mBestProvider = mLocationManager.getBestProvider(new Criteria(), true);
         Location hereNow = mLocationManager.getLastKnownLocation(mBestProvider);
         if (hereNow != null) {
             Log.d(TAG, "Location: Lat " + hereNow.getLatitude());
@@ -127,6 +142,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void getTaxi(View view) {
+        String tag = view.getTag().toString();
+        if (tag.equals("request")) {
+            requestUber();
+            view.setTag("cancel");
+        } else if (tag.equals("cancel")) {
+            cancelUber();
+            view.setTag("request");
+        }
+    }
+
+    private void requestUber() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
 
@@ -138,11 +164,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         Location hereNow = mLocationManager.getLastKnownLocation(mBestProvider);
+
         if (hereNow != null) {
-            String status = String.format("You are at %.4f Lat, %.4f Long", hereNow.getLatitude(), hereNow.getLongitude());
-            Toast.makeText(MapsActivity.this, status, Toast.LENGTH_SHORT).show();
+            final ParseObject request = new ParseObject("Requests");
+            request.put("riderUsername", ParseUser.getCurrentUser().getUsername());
+            request.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        String gettingUber = getString(R.string.maps_status_finding);
+                        mStatusTextView.setText(gettingUber);
+                        String cancelButton = getString(R.string.maps_button_cancel_taxi);
+                        mRequestButton.setText(cancelButton);
+                        mRequestId = request.getObjectId();
+                    } else {
+                        Toast.makeText(MapsActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         } else {
-            Toast.makeText(MapsActivity.this, "Location is null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapsActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void cancelUber() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Requests");
+        query.whereEqualTo("objectId", mRequestId);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject o : objects) {
+                        o.deleteInBackground();
+                    }
+
+                    mStatusTextView.setText("");
+                    String findButton = getString(R.string.maps_button_call_taxi);
+                    mRequestButton.setText(findButton);
+                } else {
+                    Toast.makeText(MapsActivity.this, "Couldn't cancel the last request", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

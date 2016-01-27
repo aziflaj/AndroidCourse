@@ -9,5 +9,7 @@
     <string name="button.signup">Get started</string>
 
     <string name="maps.activity.title">Map</string>
-    <string name="maps.button.call_taxi">Taxi here</string>
+    <string name="maps.button.call_taxi">Request Uber</string>
+    <string name="maps.button.cancel_taxi">Cancel Uber</string>
+    <string name="maps.status.finding">Finding Uber driver</string>
 </resources>
