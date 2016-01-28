@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -35,6 +37,8 @@ import com.parse.SaveCallback;
 import java.util.List;
 
 public class RiderActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+    public static final String TAG = RiderActivity.class.getSimpleName();
+
     private GoogleMap mMap;
     private Marker mMarker;
     private LocationManager mLocationManager;
@@ -190,6 +194,9 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
             acl.setPublicWriteAccess(true);
             acl.setPublicReadAccess(true);
             request.setACL(acl);
+            ParseGeoPoint herePoint = new ParseGeoPoint(hereNow.getLatitude(), hereNow.getLongitude());
+            request.put("location", herePoint);
+            Log.d(TAG, String.format("requestUber: location (%.2f, %.2f)", herePoint.getLatitude(), herePoint.getLongitude()));
             request.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
