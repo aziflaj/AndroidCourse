@@ -15,4 +15,7 @@
     <string name="rider.status.cancelled">Uber cancelled</string>
 
     <string name="driver.activity.title">Driver</string>
+    <string name="title_activity_rider">Map</string>
+    <string name="title_activity_driver">Map</string>
+    <string name="title_activity_driver_map">Map</string>
 </resources>

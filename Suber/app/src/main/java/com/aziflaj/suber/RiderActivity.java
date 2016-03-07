@@ -71,7 +71,7 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(RiderActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -87,7 +87,7 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(RiderActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -126,7 +126,7 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(RiderActivity.this, "You don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -181,7 +181,7 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(RiderActivity.this, "Don't have location permission", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Don't have location permission", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -211,7 +211,7 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
                 }
             });
         } else {
-            Toast.makeText(RiderActivity.this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Couldn't call an Uber", Toast.LENGTH_SHORT).show();
         }
     }
 

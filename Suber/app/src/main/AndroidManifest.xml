@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.aziflaj.suber"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aziflaj.suber">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".SuberApp"
@@ -22,16 +22,16 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.parse.APPLICATION_ID"
-            android:value="@string/key.parse.app_id"/>
+            android:value="@string/key.parse.app_id" />
         <meta-data
             android:name="com.parse.CLIENT_KEY"
-            android:value="@string/key.parse.client"/>
+            android:value="@string/key.parse.client" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <!--
@@ -44,15 +44,20 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
+            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".RiderActivity"
-            android:label="@string/rider.activity.title">
-        </activity>
+            android:label="@string/rider.activity.title"></activity>
         <activity
             android:name=".DriverActivity"
-            android:label="@string/driver.activity.title">
+            android:label="@string/driver.activity.title"></activity>
+        <activity
+            android:name=".DriverMapActivity"
+            android:label="@string/title_activity_driver_map">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.aziflaj.suber.DriverActivity" />
         </activity>
     </application>
 
