@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.Random;
+
 public class FlippyBird extends ApplicationAdapter {
     SpriteBatch batch;
     Texture[] flippy;
@@ -20,6 +22,15 @@ public class FlippyBird extends ApplicationAdapter {
 
     int gameState = 0;
 
+    float gap = 400f;
+    float maxTubeOffset;
+    Random rnd;
+    float[] tubeOffset;
+    float tubeVelovity = 4f;
+    float[] tubeX;
+    int numberOfTubes = 4;
+    float distanceBetweenTubes;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -29,13 +40,40 @@ public class FlippyBird extends ApplicationAdapter {
         bottomTube = new Texture("bottomtube.png");
 
         birdY = Gdx.graphics.getHeight() / 2 - flippy[0].getHeight() / 2;
+        maxTubeOffset = Gdx.graphics.getHeight() / 2 - 100 - gap / 2;
+        rnd = new Random();
+        tubeX = new float[numberOfTubes]; //= (Gdx.graphics.getWidth() - topTube.getWidth()) / 2;
+        tubeOffset = new float[numberOfTubes];
+        distanceBetweenTubes = Gdx.graphics.getWidth() * 3 / 4;
+
+        for (int i = 0; i < numberOfTubes; i++) {
+            tubeOffset[i] = (rnd.nextFloat() - 0.5f) * 2 * maxTubeOffset;
+            tubeX[i] = (Gdx.graphics.getWidth() - topTube.getWidth()) / 2 + distanceBetweenTubes * i;
+        }
     }
 
     @Override
     public void render() {
+        batch.begin();
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         if (gameState != 0) {
             if (Gdx.input.justTouched()) {
                 velocity = -30;
+            }
+
+            for (int i = 0; i < numberOfTubes; i++) {
+                if (tubeX[i] < -topTube.getWidth()) {
+                    tubeX[i] += numberOfTubes * distanceBetweenTubes;
+                }
+
+                tubeX[i] -= tubeVelovity;
+                batch.draw(topTube,
+                        tubeX[i],
+                        Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
+                batch.draw(bottomTube,
+                        tubeX[i],
+                        Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i]);
             }
 
             if (birdY - velocity < 0) {
@@ -58,17 +96,9 @@ public class FlippyBird extends ApplicationAdapter {
             }
         }
 
-        batch.begin();
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(flippy[birdState],
                 (Gdx.graphics.getWidth() - flippy[birdState].getWidth()) / 2,
                 birdY);
-        batch.draw(topTube,
-                (Gdx.graphics.getWidth() - topTube.getWidth()) / 2,
-                Gdx.graphics.getHeight() - topTube.getHeight() / 2);
-        batch.draw(bottomTube,
-                (Gdx.graphics.getWidth() - bottomTube.getWidth()) / 2,
-                -bottomTube.getHeight() / 2);
         batch.end();
     }
 }
