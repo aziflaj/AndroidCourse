@@ -25,30 +25,27 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class DriverActivity extends AppCompatActivity {
-    public static final String TAG = DriverActivity.class.getSimpleName();
+    public static final String RIDER_USERNAME_EXTRA = "RIDER_USERNAME";
     public static final String RIDER_LATITUDE_EXTRA = "RIDER_LATITUDE";
     public static final String RIDER_LONGITUDE_EXTRA = "RIDER_LONGITUDE";
 
-    private LocationManager mLocationManager;
-    private String mBestProvider;
-
-    private ListView mRiderListView;
-    private ArrayList<String> mRiderIds;
-    private HashMap<String, ParseGeoPoint> mRiderLocations;
+    private ArrayList<String> mRiderDistances;
+    private ArrayList<String> mRiderUsernames;
+    private ArrayList<ParseGeoPoint> mRiderLocations;
     private ArrayAdapter<String> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver);
-        mRiderListView = (ListView) findViewById(R.id.rider_list_view);
-        mRiderIds = new ArrayList<>();
-        mRiderLocations = new HashMap<>();
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mRiderIds);
+        ListView mRiderListView = (ListView) findViewById(R.id.rider_list_view);
+        mRiderDistances = new ArrayList<>();
+        mRiderUsernames = new ArrayList<>();
+        mRiderLocations = new ArrayList<>();
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mRiderDistances);
         mRiderListView.setAdapter(mAdapter);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -61,8 +58,8 @@ public class DriverActivity extends AppCompatActivity {
             return;
         }
 
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        mBestProvider = mLocationManager.getBestProvider(new Criteria(), true);
+        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        String mBestProvider = mLocationManager.getBestProvider(new Criteria(), true);
         final Location last = mLocationManager.getLastKnownLocation(mBestProvider);
         if (last != null) {
             ParseGeoPoint driverLocation = new ParseGeoPoint(last.getLatitude(), last.getLongitude());
@@ -74,15 +71,15 @@ public class DriverActivity extends AppCompatActivity {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
                     if (e == null && objects.size() > 0) {
-                        mRiderIds.clear();
+                        mRiderDistances.clear();
+                        mRiderUsernames.clear();
                         mRiderLocations.clear();
-                        int counter = 0;
                         for (ParseObject o : objects) {
+                            mRiderUsernames.add(String.valueOf(o.get("riderUsername")));
                             ParseGeoPoint location = o.getParseGeoPoint("location");
                             double distance = location.distanceInKilometersTo(new ParseGeoPoint(last.getLatitude(), last.getLongitude()));
-                            mRiderIds.add(String.format("%.3f km", distance));
-                            mRiderLocations.put(o.getObjectId(), location);
-                            counter++;
+                            mRiderDistances.add(String.format("%.3f km", distance));
+                            mRiderLocations.add(location);
                         }
                         mAdapter.notifyDataSetChanged();
                     }
@@ -94,9 +91,9 @@ public class DriverActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(DriverActivity.this, DriverMapActivity.class);
-                String riderId = mRiderIds.get(position);
-                intent.putExtra(RIDER_LATITUDE_EXTRA, mRiderLocations.get(riderId).getLatitude());
-                intent.putExtra(RIDER_LONGITUDE_EXTRA, mRiderLocations.get(riderId).getLongitude());
+                intent.putExtra(RIDER_USERNAME_EXTRA, mRiderUsernames.get(position));
+                intent.putExtra(RIDER_LATITUDE_EXTRA, mRiderLocations.get(position).getLatitude());
+                intent.putExtra(RIDER_LONGITUDE_EXTRA, mRiderLocations.get(position).getLongitude());
                 startActivity(intent);
             }
         });

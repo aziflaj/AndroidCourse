@@ -12,6 +12,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,6 +34,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private Marker riderMarker;
     private LocationManager mLocationManager;
     private String mBestProvider;
+    private RelativeLayout mapLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mapLayout = (RelativeLayout) findViewById(R.id.driver_map_layout);
+
     }
 
     @Override
@@ -122,25 +128,30 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(final Location location) {
         if (driverMarker != null) {
             driverMarker.remove();
         }
 
-        double driverLat = location.getLatitude();
-        double driverLong = location.getLongitude();
-        LatLng hereNow = new LatLng(driverLat, driverLong);
-        driverMarker = mMap.addMarker(new MarkerOptions()
-                .position(hereNow)
-                .title("You")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        mapLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                double driverLat = location.getLatitude();
+                double driverLong = location.getLongitude();
+                LatLng hereNow = new LatLng(driverLat, driverLong);
+                driverMarker = mMap.addMarker(new MarkerOptions()
+                        .position(hereNow)
+                        .title("You")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
-        LatLngBounds bounds = new LatLngBounds.Builder()
-                .include(riderMarker.getPosition())
-                .include(driverMarker.getPosition())
-                .build();
+                LatLngBounds bounds = new LatLngBounds.Builder()
+                        .include(riderMarker.getPosition())
+                        .include(driverMarker.getPosition())
+                        .build();
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
+            }
+        });
     }
 
     @Override
