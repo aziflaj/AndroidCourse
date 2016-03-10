@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -62,23 +63,6 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
         mapLayout = (RelativeLayout) findViewById(R.id.driver_map_layout);
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            Toast.makeText(this, "Don't have location permission", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        mLocationManager.removeUpdates(this);
     }
 
     @Override
@@ -143,6 +127,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         if (driverMarker != null) {
             driverMarker.remove();
         }
+
+        ParseUser.getCurrentUser().put("userLocation", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+        ParseUser.getCurrentUser().saveInBackground();
 
         mapLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

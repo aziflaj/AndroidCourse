@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +24,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
@@ -41,10 +45,15 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private GoogleMap mMap;
     private Marker mMarker;
+    private Marker mDriverMarker;
     private LocationManager mLocationManager;
     private String mBestProvider;
     private TextView mStatusTextView;
     private Button mRequestButton;
+
+    private String mDriverUsername;
+    boolean requested = false;
+    RelativeLayout mapLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +63,8 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
         mRequestButton = (Button) findViewById(R.id.request_btn);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mBestProvider = mLocationManager.getBestProvider(new Criteria(), true);
+
+        mapLayout = (RelativeLayout) findViewById(R.id.rider_map_layout);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -135,6 +146,28 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
             onLocationChanged(hereNow);
         }
 
+        ParseQuery<ParseObject> query = new ParseQuery<>("Requests");
+        query.whereEqualTo("riderUsername", ParseUser.getCurrentUser().getUsername());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    for (ParseObject obj : objects) {
+                        if (obj.get("driverUsername") != null) {
+                            mDriverUsername = obj.getString("driverUsername");
+                            mStatusTextView.setText(getString(R.string.rider_status_driver_found));
+                            mRequestButton.setText(getString(R.string.rider_button_show_taxi));
+                            mRequestButton.setTag("found");
+                        } else {
+                            mStatusTextView.setText(getString(R.string.rider_status_finding));
+                            mRequestButton.setText(getString(R.string.rider_button_cancel_taxi));
+                            mRequestButton.setTag("cancel");
+                        }
+                    }
+                }
+            }
+        });
+
         mLocationManager.requestLocationUpdates(mBestProvider, 400, 1, this);
     }
 
@@ -148,7 +181,21 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
         double lng = location.getLongitude();
         LatLng hereNow = new LatLng(lat, lng);
         mMarker = mMap.addMarker(new MarkerOptions().position(hereNow));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(hereNow, 17));
+        if (requested) {
+            mapLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    LatLngBounds bounds = new LatLngBounds.Builder()
+                            .include(mMarker.getPosition())
+                            .include(mDriverMarker.getPosition())
+                            .build();
+
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+                }
+            });
+        } else {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(hereNow, 17));
+        }
     }
 
     @Override
@@ -165,12 +212,18 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
 
     public void getTaxi(View view) {
         String tag = view.getTag().toString();
-        if (tag.equals("request")) {
-            requestUber();
-            view.setTag("cancel");
-        } else if (tag.equals("cancel")) {
-            cancelUber();
-            view.setTag("request");
+        switch (tag) {
+            case "request":
+                requestUber();
+                view.setTag("cancel");
+                break;
+            case "cancel":
+                cancelUber();
+                view.setTag("request");
+                break;
+            case "found":
+                showUberLocation();
+                break;
         }
     }
 
@@ -232,6 +285,30 @@ public class RiderActivity extends AppCompatActivity implements OnMapReadyCallba
                     mRequestButton.setText(findButton);
                 } else {
                     Toast.makeText(RiderActivity.this, "Couldn't cancel the last request", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void showUberLocation() {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", mDriverUsername);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    ParseUser driver = objects.get(0);
+                    ParseGeoPoint driverLocation = driver.getParseGeoPoint("userLocation");
+
+                    if (mDriverMarker != null) {
+                        mDriverMarker.remove();
+                    }
+
+                    mDriverMarker = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(driverLocation.getLatitude(), driverLocation.getLongitude()))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+                    requested = true;
                 }
             }
         });

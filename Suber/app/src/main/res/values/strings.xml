@@ -11,10 +11,14 @@
     <string name="rider.activity.title">Rider</string>
     <string name="rider.button.call_taxi">Request Uber</string>
     <string name="rider.button.cancel_taxi">Cancel Uber</string>
+    <string name="rider.button.show_taxi">Show Uber</string>
     <string name="rider.status.finding">Finding Uber</string>
     <string name="rider.status.cancelled">Uber cancelled</string>
+    <string name="rider.status.driver_found">Found Uber</string>
 
     <string name="driver.activity.title">Driver</string>
+
+
     <string name="title_activity_rider">Map</string>
     <string name="title_activity_driver">Map</string>
     <string name="title_activity_driver_map">Map</string>
