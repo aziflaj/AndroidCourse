@@ -2,7 +2,9 @@ package com.aziflaj.flippybird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
@@ -33,9 +35,14 @@ public class FlippyBird extends ApplicationAdapter {
     int numberOfTubes = 4;
     float distanceBetweenTubes;
 
+    int score = 0;
+    int countTubes = 0;
+
     Circle flippyCircle;
     Rectangle[] topTubeRect;
     Rectangle[] bottomTubeRect;
+
+    BitmapFont font;
 
     @Override
     public void create() {
@@ -62,6 +69,10 @@ public class FlippyBird extends ApplicationAdapter {
             topTubeRect[i] = new Rectangle();
             bottomTubeRect[i] = new Rectangle();
         }
+
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        font.getData().setScale(10);
     }
 
     @Override
@@ -74,6 +85,16 @@ public class FlippyBird extends ApplicationAdapter {
                 velocity = -30;
             }
 
+            if (tubeX[countTubes] < Gdx.graphics.getWidth() / 2) {
+                score++;
+                if (countTubes < numberOfTubes-1) {
+                    countTubes++;
+                } else {
+                    countTubes = 0;
+                }
+                Gdx.app.log("GDX", "" + countTubes);
+            }
+
             for (int i = 0; i < numberOfTubes; i++) {
                 if (tubeX[i] < -topTube.getWidth()) {
                     tubeX[i] += numberOfTubes * distanceBetweenTubes;
@@ -81,6 +102,7 @@ public class FlippyBird extends ApplicationAdapter {
                 }
 
                 tubeX[i] -= tubeVelovity;
+
                 batch.draw(topTube,
                         tubeX[i],
                         Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
@@ -121,6 +143,7 @@ public class FlippyBird extends ApplicationAdapter {
         batch.draw(flippy[birdState],
                 (Gdx.graphics.getWidth() - flippy[birdState].getWidth()) / 2,
                 birdY);
+        font.draw(batch, String.valueOf(score), 100, 200);
         batch.end();
 
 
@@ -131,7 +154,8 @@ public class FlippyBird extends ApplicationAdapter {
 
         for (int i = 0; i < numberOfTubes; i++) {
             if (Intersector.overlaps(flippyCircle, topTubeRect[i]) || Intersector.overlaps(flippyCircle, bottomTubeRect[i])) {
-                Gdx.app.log("GDX", "Collision");
+//                Gdx.app.log("GDX", "Collision");
+//                gameState = 0; // stop the game
             }
         }
     }
