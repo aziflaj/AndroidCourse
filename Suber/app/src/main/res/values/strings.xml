@@ -18,4 +18,8 @@
     <string name="title_activity_rider">Map</string>
     <string name="title_activity_driver">Map</string>
     <string name="title_activity_driver_map">Map</string>
+
+    <string name="drivermap.button.accept">Accept Request</string>
+    <string name="drivermap.button.go_back">Back</string>
+
 </resources>

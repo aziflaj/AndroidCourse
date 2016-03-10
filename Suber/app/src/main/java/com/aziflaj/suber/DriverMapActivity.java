@@ -1,6 +1,7 @@
 package com.aziflaj.suber;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -9,6 +10,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,13 +20,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+    public static final String TAG = DriverMapActivity.class.getSimpleName();
 
     private GoogleMap mMap;
-    private Marker mMarker;
+    private Marker driverMarker;
+    private Marker riderMarker;
     private LocationManager mLocationManager;
     private String mBestProvider;
 
@@ -88,14 +94,14 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        double lat = getIntent().getDoubleExtra(DriverActivity.RIDER_LATITUDE_EXTRA, 0.0);
-        double lng = getIntent().getDoubleExtra(DriverActivity.RIDER_LONGITUDE_EXTRA, 0.0);
-        LatLng rider = new LatLng(lat, lng);
-        mMap.addMarker(new MarkerOptions()
+
+        double riderLat = getIntent().getDoubleExtra(DriverActivity.RIDER_LATITUDE_EXTRA, 0.0);
+        double riderLong = getIntent().getDoubleExtra(DriverActivity.RIDER_LONGITUDE_EXTRA, 0.0);
+        LatLng rider = new LatLng(riderLat, riderLong);
+        riderMarker = mMap.addMarker(new MarkerOptions()
                 .position(rider)
                 .title("Rider")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rider, 17));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -117,18 +123,24 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     @Override
     public void onLocationChanged(Location location) {
-        if (mMarker != null) {
-            mMarker.remove();
+        if (driverMarker != null) {
+            driverMarker.remove();
         }
 
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-        LatLng hereNow = new LatLng(lat, lng);
-        mMarker = mMap.addMarker(new MarkerOptions()
+        double driverLat = location.getLatitude();
+        double driverLong = location.getLongitude();
+        LatLng hereNow = new LatLng(driverLat, driverLong);
+        driverMarker = mMap.addMarker(new MarkerOptions()
                 .position(hereNow)
                 .title("You")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(hereNow, 17));
+
+        LatLngBounds bounds = new LatLngBounds.Builder()
+                .include(riderMarker.getPosition())
+                .include(driverMarker.getPosition())
+                .build();
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
     }
 
     @Override
@@ -141,5 +153,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     @Override
     public void onProviderDisabled(String provider) {
+    }
+
+    public void goBack(View vew) {
+        startActivity(new Intent(DriverMapActivity.this, DriverActivity.class));
+    }
+
+    public void acceptRequest(View view) {
+        Log.d(TAG, "acceptRequest");
     }
 }

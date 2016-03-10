@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,22 +63,26 @@ public class DriverActivity extends AppCompatActivity {
 
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mBestProvider = mLocationManager.getBestProvider(new Criteria(), true);
-        Location last = mLocationManager.getLastKnownLocation(mBestProvider);
+        final Location last = mLocationManager.getLastKnownLocation(mBestProvider);
         if (last != null) {
             ParseGeoPoint driverLocation = new ParseGeoPoint(last.getLatitude(), last.getLongitude());
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Requests");
             query.whereWithinKilometers("location", driverLocation, 100);
-            query.setLimit(10);
+            query.whereDoesNotExist("driverUsername");
+            query.setLimit(100);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
                     if (e == null && objects.size() > 0) {
                         mRiderIds.clear();
                         mRiderLocations.clear();
+                        int counter = 0;
                         for (ParseObject o : objects) {
-                            mRiderIds.add(o.getObjectId());
                             ParseGeoPoint location = o.getParseGeoPoint("location");
+                            double distance = location.distanceInKilometersTo(new ParseGeoPoint(last.getLatitude(), last.getLongitude()));
+                            mRiderIds.add(String.format("%.3f km", distance));
                             mRiderLocations.put(o.getObjectId(), location);
+                            counter++;
                         }
                         mAdapter.notifyDataSetChanged();
                     }
