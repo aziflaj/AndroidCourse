@@ -34,3 +34,6 @@ This is the repository of different Android applications developed while going t
 
 ## #11 Exchangeagram
 [Exchangeagram](https://github.com/aziflaj/AndroidCourse/tree/master/Exchangeagram) is an Instagram copy application, using [Parse](http://parse.com/) for online storage.
+
+## #12 Suber
+[Suber](https://github.com/aziflaj/AndroidCourse/tree/master/Suber) is an Uber clone application, using [Parse](http://parse.com) Geolocation API.
