@@ -4,6 +4,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
@@ -14,22 +17,25 @@ public class FlippyBird extends ApplicationAdapter {
     Texture topTube;
     Texture bottomTube;
 
+    int gameState = 0;
     int birdState = 0;
 
     float birdY = 0f; // bird's position
     float velocity = 0;
     float gravity = 1.5f;
 
-    int gameState = 0;
-
+    Random rnd;
     float gap = 400f;
     float maxTubeOffset;
-    Random rnd;
     float[] tubeOffset;
     float tubeVelovity = 4f;
     float[] tubeX;
     int numberOfTubes = 4;
     float distanceBetweenTubes;
+
+    Circle flippyCircle;
+    Rectangle[] topTubeRect;
+    Rectangle[] bottomTubeRect;
 
     @Override
     public void create() {
@@ -42,13 +48,19 @@ public class FlippyBird extends ApplicationAdapter {
         birdY = Gdx.graphics.getHeight() / 2 - flippy[0].getHeight() / 2;
         maxTubeOffset = Gdx.graphics.getHeight() / 2 - 100 - gap / 2;
         rnd = new Random();
-        tubeX = new float[numberOfTubes]; //= (Gdx.graphics.getWidth() - topTube.getWidth()) / 2;
+        tubeX = new float[numberOfTubes];
         tubeOffset = new float[numberOfTubes];
         distanceBetweenTubes = Gdx.graphics.getWidth() * 3 / 4;
 
+        flippyCircle = new Circle();
+        topTubeRect = new Rectangle[numberOfTubes];
+        bottomTubeRect = new Rectangle[numberOfTubes];
+
         for (int i = 0; i < numberOfTubes; i++) {
             tubeOffset[i] = (rnd.nextFloat() - 0.5f) * 2 * maxTubeOffset;
-            tubeX[i] = (Gdx.graphics.getWidth() - topTube.getWidth()) / 2 + distanceBetweenTubes * i;
+            tubeX[i] = (Gdx.graphics.getWidth() - topTube.getWidth()) / 2 + distanceBetweenTubes * (i + 1);
+            topTubeRect[i] = new Rectangle();
+            bottomTubeRect[i] = new Rectangle();
         }
     }
 
@@ -65,6 +77,7 @@ public class FlippyBird extends ApplicationAdapter {
             for (int i = 0; i < numberOfTubes; i++) {
                 if (tubeX[i] < -topTube.getWidth()) {
                     tubeX[i] += numberOfTubes * distanceBetweenTubes;
+                    tubeOffset[i] = (rnd.nextFloat() - 0.5f) * 2 * maxTubeOffset;
                 }
 
                 tubeX[i] -= tubeVelovity;
@@ -74,6 +87,15 @@ public class FlippyBird extends ApplicationAdapter {
                 batch.draw(bottomTube,
                         tubeX[i],
                         Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i]);
+
+                topTubeRect[i].set(tubeX[i],
+                        Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i],
+                        topTube.getWidth(),
+                        topTube.getHeight());
+                bottomTubeRect[i].set(tubeX[i],
+                        Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i],
+                        bottomTube.getWidth(),
+                        bottomTube.getHeight());
             }
 
             if (birdY - velocity < 0) {
@@ -100,5 +122,17 @@ public class FlippyBird extends ApplicationAdapter {
                 (Gdx.graphics.getWidth() - flippy[birdState].getWidth()) / 2,
                 birdY);
         batch.end();
+
+
+        flippyCircle.set(Gdx.graphics.getWidth() / 2,
+                birdY + flippy[birdState].getHeight() / 2,
+                flippy[birdState].getWidth() / 2);
+
+
+        for (int i = 0; i < numberOfTubes; i++) {
+            if (Intersector.overlaps(flippyCircle, topTubeRect[i]) || Intersector.overlaps(flippyCircle, bottomTubeRect[i])) {
+                Gdx.app.log("GDX", "Collision");
+            }
+        }
     }
 }
