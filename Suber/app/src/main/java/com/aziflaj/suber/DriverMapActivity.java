@@ -7,6 +7,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -25,6 +26,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.List;
 
 public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
     public static final String TAG = DriverMapActivity.class.getSimpleName();
@@ -35,6 +43,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private LocationManager mLocationManager;
     private String mBestProvider;
     private RelativeLayout mapLayout;
+
+    double riderLat;
+    double riderLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +112,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        double riderLat = getIntent().getDoubleExtra(DriverActivity.RIDER_LATITUDE_EXTRA, 0.0);
-        double riderLong = getIntent().getDoubleExtra(DriverActivity.RIDER_LONGITUDE_EXTRA, 0.0);
+        riderLat = getIntent().getDoubleExtra(DriverActivity.RIDER_LATITUDE_EXTRA, 0.0);
+        riderLong = getIntent().getDoubleExtra(DriverActivity.RIDER_LONGITUDE_EXTRA, 0.0);
         LatLng rider = new LatLng(riderLat, riderLong);
         riderMarker = mMap.addMarker(new MarkerOptions()
                 .position(rider)
@@ -149,7 +160,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         .include(driverMarker.getPosition())
                         .build();
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
             }
         });
     }
@@ -171,6 +182,24 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     public void acceptRequest(View view) {
-        Log.d(TAG, "acceptRequest");
+        String riderUsername = getIntent().getStringExtra(DriverActivity.RIDER_USERNAME_EXTRA);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Requests");
+        query.whereEqualTo("riderUsername", riderUsername);
+        query.whereDoesNotExist("driverUsername");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    for (ParseObject o : objects) {
+                        o.put("driverUsername", ParseUser.getCurrentUser().getUsername());
+                        o.saveInBackground();
+                    }
+
+                    Intent directionIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?daddr=" + riderLat + "," + riderLong));
+                    startActivity(directionIntent);
+                }
+            }
+        });
     }
 }
