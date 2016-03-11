@@ -1,11 +1,12 @@
 package com.aziflaj.weardemo;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.WatchViewStub;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -19,14 +20,12 @@ public class MainActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                helloBtn = (Button) findViewById(R.id.hello_btn);
-
-                helloBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "Hello, Android Wear!", Toast.LENGTH_LONG).show();
-                    }
-                });
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                CardFragment cardFragment = CardFragment.create("Hello, Wear",
+                        "How are you today?");
+                fragmentTransaction.add(R.id.frame_layout, cardFragment);
+                fragmentTransaction.commit();
             }
         });
     }
