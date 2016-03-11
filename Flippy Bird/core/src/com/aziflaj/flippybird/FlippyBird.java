@@ -18,6 +18,7 @@ public class FlippyBird extends ApplicationAdapter {
     Texture background;
     Texture topTube;
     Texture bottomTube;
+    Texture gameOver;
 
     int gameState = 0;
     int birdState = 0;
@@ -27,7 +28,7 @@ public class FlippyBird extends ApplicationAdapter {
     float gravity = 1.5f;
 
     Random rnd;
-    float gap = 400f;
+    float gap = 600f;
     float maxTubeOffset;
     float[] tubeOffset;
     float tubeVelovity = 4f;
@@ -51,8 +52,8 @@ public class FlippyBird extends ApplicationAdapter {
         background = new Texture("bg.png");
         topTube = new Texture("toptube.png");
         bottomTube = new Texture("bottomtube.png");
+        gameOver = new Texture("gameover.png");
 
-        birdY = Gdx.graphics.getHeight() / 2 - flippy[0].getHeight() / 2;
         maxTubeOffset = Gdx.graphics.getHeight() / 2 - 100 - gap / 2;
         rnd = new Random();
         tubeX = new float[numberOfTubes];
@@ -63,12 +64,7 @@ public class FlippyBird extends ApplicationAdapter {
         topTubeRect = new Rectangle[numberOfTubes];
         bottomTubeRect = new Rectangle[numberOfTubes];
 
-        for (int i = 0; i < numberOfTubes; i++) {
-            tubeOffset[i] = (rnd.nextFloat() - 0.5f) * 2 * maxTubeOffset;
-            tubeX[i] = (Gdx.graphics.getWidth() - topTube.getWidth()) / 2 + distanceBetweenTubes * (i + 1);
-            topTubeRect[i] = new Rectangle();
-            bottomTubeRect[i] = new Rectangle();
-        }
+        startGame();
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -80,19 +76,18 @@ public class FlippyBird extends ApplicationAdapter {
         batch.begin();
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        if (gameState != 0) {
+        if (gameState == 1) {
             if (Gdx.input.justTouched()) {
                 velocity = -30;
             }
 
             if (tubeX[countTubes] < Gdx.graphics.getWidth() / 2) {
                 score++;
-                if (countTubes < numberOfTubes-1) {
+                if (countTubes < numberOfTubes - 1) {
                     countTubes++;
                 } else {
                     countTubes = 0;
                 }
-                Gdx.app.log("GDX", "" + countTubes);
             }
 
             for (int i = 0; i < numberOfTubes; i++) {
@@ -131,12 +126,24 @@ public class FlippyBird extends ApplicationAdapter {
             if (birdY > 0 || velocity < 0) {
                 velocity += gravity;
                 birdY -= velocity;
+            } else {
+                gameState = 2; // game over
             }
+
             birdState = birdState == 1 ? 0 : 1;
-        } else {
+        } else if (gameState == 0) {
             if (Gdx.input.justTouched()) {
                 gameState = 1;
                 velocity = -30;
+            }
+        } else if (gameState == 2) {
+            batch.draw(gameOver,
+                    (Gdx.graphics.getWidth() - gameOver.getWidth()) / 2,
+                    (Gdx.graphics.getHeight() - gameOver.getHeight()) / 2);
+
+            if (Gdx.input.justTouched()) {
+                gameState = 1;
+                startGame();
             }
         }
 
@@ -154,9 +161,25 @@ public class FlippyBird extends ApplicationAdapter {
 
         for (int i = 0; i < numberOfTubes; i++) {
             if (Intersector.overlaps(flippyCircle, topTubeRect[i]) || Intersector.overlaps(flippyCircle, bottomTubeRect[i])) {
-//                Gdx.app.log("GDX", "Collision");
-//                gameState = 0; // stop the game
+                gameState = 2; // game
+
             }
+        }
+    }
+
+    private void startGame() {
+        score = 0;
+        countTubes = 0;
+        velocity = 0;
+
+
+        birdY = Gdx.graphics.getHeight() / 2 - flippy[0].getHeight() / 2;
+
+        for (int i = 0; i < numberOfTubes; i++) {
+            tubeOffset[i] = (rnd.nextFloat() - 0.5f) * 2 * maxTubeOffset;
+            tubeX[i] = (Gdx.graphics.getWidth() - topTube.getWidth()) / 2 + distanceBetweenTubes * (i + 1);
+            topTubeRect[i] = new Rectangle();
+            bottomTubeRect[i] = new Rectangle();
         }
     }
 }
