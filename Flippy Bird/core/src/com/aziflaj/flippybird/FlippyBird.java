@@ -19,6 +19,7 @@ public class FlippyBird extends ApplicationAdapter {
     Texture topTube;
     Texture bottomTube;
     Texture gameOver;
+    Texture parrot;
 
     int gameState = 0;
     int birdState = 0;
@@ -28,7 +29,7 @@ public class FlippyBird extends ApplicationAdapter {
     float gravity = 1.5f;
 
     Random rnd;
-    float gap = 600f;
+    float gap = 500f;
     float maxTubeOffset;
     float[] tubeOffset;
     float tubeVelovity = 4f;
@@ -158,7 +159,6 @@ public class FlippyBird extends ApplicationAdapter {
                 birdY + flippy[birdState].getHeight() / 2,
                 flippy[birdState].getWidth() / 2);
 
-
         for (int i = 0; i < numberOfTubes; i++) {
             if (Intersector.overlaps(flippyCircle, topTubeRect[i]) || Intersector.overlaps(flippyCircle, bottomTubeRect[i])) {
                 gameState = 2; // game
@@ -170,8 +170,7 @@ public class FlippyBird extends ApplicationAdapter {
     private void startGame() {
         score = 0;
         countTubes = 0;
-        velocity = 0;
-
+        velocity = -30;
 
         birdY = Gdx.graphics.getHeight() / 2 - flippy[0].getHeight() / 2;
 
