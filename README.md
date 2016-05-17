@@ -37,3 +37,6 @@ This is the repository of different Android applications developed while going t
 
 ## #12 Suber
 [Suber](https://github.com/aziflaj/AndroidCourse/tree/master/Suber) is an Uber clone application, using [Parse](http://parse.com) Geolocation API.
+
+## #13 Flippy Bird
+[Flippy Bird](https://github.com/aziflaj/AndroidCourse/Tree/master/Flippy%20Bird) is a Flappy Bird clone built using LibGDX library for game development.
