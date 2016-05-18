@@ -9,8 +9,63 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.aziflaj.tweeter.MainActivity">
 
-    <TextView
+    <ImageView
+        android:id="@+id/tweeter_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/hint.logo"
+        android:src="@drawable/tweeter_logo" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/username_edit_text_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tweeter_logo"
+        android:layout_marginTop="30dp">
+
+        <EditText
+            android:id="@+id/username_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint.username" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/password_edit_text_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username_edit_text_wrapper">
+
+        <EditText
+            android:id="@+id/password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint.password"
+            android:inputType="textPassword" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/session_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_edit_text_wrapper"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:onClick="handleSession"
+        android:tag="login"
+        android:text="@string/login.button" />
+
+    <TextView
+        android:id="@+id/hint_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/session_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:onClick="toggleLoginSignup"
+        android:text="@string/signup.hint" />
+
 </RelativeLayout>
